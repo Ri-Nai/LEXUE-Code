@@ -11,7 +11,7 @@ def Cmp(s,Suf,Sub):
     return False
 Len=(3,4)
 Suf=(".in",".out",".exe",".ans")
-Sub=("tmp","Tmp")
+Sub=("tmp","Tmp","temp")
 mypath=os.getcwd()
 for root,dirs,files in os.walk(mypath):
     for name in files:
