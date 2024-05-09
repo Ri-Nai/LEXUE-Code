@@ -1,0 +1,1 @@
+    int qy = quadrant(X[y], Y[y]);
