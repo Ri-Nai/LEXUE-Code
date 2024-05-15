@@ -19,5 +19,4 @@ int main()
         pos[id[i]] = i;
     for (int i = 1; i <= n; ++i)
         printf("%d\n", pos[i]);
-
 }
