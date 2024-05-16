@@ -1,4 +1,5 @@
 detect-BITOJ/
+.vscode
 1*.c
 1*.cpp
 *.in
