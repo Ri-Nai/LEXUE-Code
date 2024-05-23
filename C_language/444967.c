@@ -15,8 +15,8 @@ int main()
         scanf("%d%d", &name[i], &age[i]);
     for (int i = 0; i < n; ++i)
         L[i] = (i + n - 1) % n, R[i] = (i + 1) % n;
-    int q = 0;
-    for (int i = 0; i < n; ++i)
+    int q = p ? n - 1 : 0;
+    for (int i = 0; i < n - 1; ++i)
     {
         for (int j = 1; j < k; ++j)
             q = p ? L[q] : R[q];
