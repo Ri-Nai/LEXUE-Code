@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <ctype.h>
 struct nn
 {
     int no;
@@ -23,24 +24,23 @@ int main()
 
 int number(char *str, DATA a[])
 {
-    int x, n = 0;
+    int n = 0;
     int now = 0;
-    while (sscanf(str, "%d", &a[n].num))
+    for (int i = 0;; ++i)
     {
-        // printf("%d\n", a[n].num);
-        a[n].no = 0;
-        ++n;
-        while (*str != ' ' && *str != 0)
+        if (str[i] >= '0' && str[i] <= '9')
+            now = (now * 10) + str[i] - '0';
+        else
         {
-            ++str;
+            a[n].no = 0;
+            a[n++].num = now;
+            now = 0;
+            if (str[i] == 0)
+                break;
         }
-        if (*str == 0)
-            break;
-        ++str;
     }
     for (int i = 0; i < n; ++i)
         for (int j = 0; j < n; ++j)
             a[i].no += a[j].num < a[i].num || j <= i && a[j].num == a[i].num;
     return n;
-
 }
