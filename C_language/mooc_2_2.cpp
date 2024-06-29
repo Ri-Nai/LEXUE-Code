@@ -7,7 +7,6 @@ int main()
     int n;
     char c;
     scanf("%d,%c", &n, &c);
-    long long ans = 0;
     auto nxt = [&](char &c)
     {
         char t = c;
