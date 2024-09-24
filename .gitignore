@@ -4,6 +4,7 @@ detect-BITOJ/
 1*.cpp
 *.in
 temp*
+tmp*
 # Prerequisites
 *.d
 
