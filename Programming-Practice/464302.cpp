@@ -1,6 +1,6 @@
 #include <bits/stdc++.h>
 using namespace std;
-const double pi = 3.1415926;
+const double pi = acos(-1);
 int main()
 {
     int n;
@@ -15,35 +15,27 @@ int main()
     for (int i = 0; i < n; ++i)
         cin >> X[i] >> Y[i];
     double ans = 0;
-    vector<int> mark(n), P(n);
+    vector<int> P(n);
     auto check_ans = [&]() -> void
     {
         vector<double> R(n);
         double res = 0;
         for (int i = 0; i < n; ++i)
         {
-            R[i] = min(min(abs(X[i] - x1), abs(x2 - X[i])),
-                       min(abs(Y[i] - y1), abs(y2 - Y[i])));
-            for (int j = 0; j < i; ++j)
-                R[i] = min(R[i], -R[j] + sqrt((X[i] - X[j]) * (X[i] - X[j]) + (Y[i] - Y[j]) * (Y[i] - Y[j])));
+            int u = P[i];
+            R[i] = min(min(abs(X[u] - x1), abs(x2 - X[u])),
+                       min(abs(Y[u] - y1), abs(y2 - Y[u])));
+            for (int j = 0, v; j < i && 1 + (v = P[j]); ++j)
+                R[i] = min(R[i], -R[j] + sqrt((X[u] - X[v]) * (X[u] - X[v]) + (Y[u] - Y[v]) * (Y[u] - Y[v])));
+            R[i] = max(R[i], 0.);
             res += pi * R[i] * R[i];
         }
         ans = max(ans, res);
     };
-    auto dfs = [&](auto self, int x) -> void
-    {
-        if (x == n)
-            return check_ans();
-        for (int i = 0; i < n; ++i)
-            if (!mark[i])
-            {
-                mark[i] = 1;
-                P[x] = i;
-                self(self, x + 1);
-                mark[i] = 0;
-            }
-    };
-    dfs(dfs, 0);
+    iota(P.begin(), P.end(), 0);
+    do
+        check_ans();
+    while (next_permutation(P.begin(), P.end()));
     ans = 1. * (y2 - y1) * (x2 - x1) - ans;
-    cout << round(ans) << '\n';
+    printf("%.0lf\n", ans);
 }

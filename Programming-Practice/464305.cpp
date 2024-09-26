@@ -2,40 +2,42 @@
 using namespace std;
 int main()
 {
-    int n, m;
+    int n;
+    long long m;
     cin >> n >> m;
-    vector<vector<int>> A(n, vector<int>(m));
-    for (int i = 0; i < n; ++i)
-        for (int j = 0; j < m; ++j)
-            cin >> A[i][j];
-    vector<int> valid;
-    int S = 1 << m;
-    for (int i = 0; i < S; ++i)
-        if (!((i >> 1 | i << 1) & i))
-            valid.push_back(i);
-    vector<vector<int>> dp(n, vector<int>(S));
-    vector<vector<int>> sum(n, vector<int>(S));
-    for (int i = 0; i < n; ++i)
-        for (int now : valid)
-            for (int j = 0; j < m; ++j)
-                if (now >> j & 1)
-                    sum[i][now] += A[i][j];
-    int ans = 0;
-    for (int i = 0; i < n; ++i)
+    vector<int> A(n);
+    vector<long long> fac(n);
+    fac[0] = 1;
+    for (int i = 1; i < n; ++i)
+        fac[i] = fac[i - 1] * i;
+    auto C = [&](int n, int m)
     {
-        for (int now : valid)
+        return fac[n] / fac[m] / fac[n - m]; 
+    };
+    vector<int> mark(n);
+    function<void(int, int)> dfs = [&](int u, long long now)
+    {
+        if (now < 0)
+            return;
+        if (u == n)
         {
-            if (i == 0)
-                dp[i][now] = sum[i][now];
-            else
-                for (int last : valid)
-                {
-                    if ((last >> 1 | last | last << 1 ) & now)
-                        continue;
-                    dp[i][now] = max(dp[i][now], dp[i - 1][last] + sum[i][now]);
-                    ans = max(ans, dp[i][now]);
-                }
+            if (now == 0)
+            {
+                for (int i = 0; i < n; ++i)
+                    cout << A[i] << " \n"[i == n - 1];
+                exit(0);
+            }
         }
-    }
-    cout << ans << '\n';
+        for (int i = 0; i < n; ++i)
+        {
+            if (mark[i])
+                continue;
+            mark[i] = 1;
+            A[u] = i + 1;
+            dfs(u + 1, now - C(n - 1, u) * A[u]);
+            mark[i] = 0;
+        }
+    };
+    dfs(0, m);
+    
 }

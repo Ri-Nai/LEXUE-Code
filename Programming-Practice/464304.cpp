@@ -15,7 +15,7 @@ int main()
     {
         return 1ll * (x1 - x2) * (x1 - x2) + 1ll * (y1 - y2) * (y1 - y2);
     };
-    long long ans = 0;
+    double ans = 0;
     auto check = [&](int u, int v)
     {
         bool flag = 0;
@@ -37,7 +37,6 @@ int main()
             flag = 1;
             last = now;
         }
-        cout << u << ' ' << v << '\n';
         ans += sqrt(length);
     };
     for (int i = 0; i < n; ++i)
