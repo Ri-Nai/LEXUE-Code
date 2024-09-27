@@ -1,5 +1,55 @@
 #include <bits/stdc++.h>
 using namespace std;
+
+template <typename T>
+struct Node
+{
+    T data;
+    Node *next;
+
+    Node(T value) : data(value), next(nullptr) {}
+};
+
+template <typename T>
+class Queue
+{
+private:
+    Node<T> *head;
+    Node<T> *tail;
+
+public:
+    Queue() : head(nullptr), tail(nullptr) {}
+
+    bool empty()
+    {
+        return head == nullptr;
+    }
+
+    void push(T value)
+    {
+        Node<T> *newNode = new Node<T>(value);
+        if (empty())
+            head = tail = newNode;
+        else
+        {
+            tail->next = newNode;
+            tail = newNode;
+        }
+    }
+    T front()
+    {
+        return head->data;
+    }
+    T pop()
+    {
+        Node<T> *temp = head;
+        T value = head->data;
+        head = head->next;
+        delete temp;
+        return value;
+    }
+};
+
 int main()
 {
     int n, land_time, takeoff_time;
@@ -11,7 +61,7 @@ int main()
         runway() : need(0), total(0) {}
     };
     vector<runway> runways(n + 1);
-    queue<pair<int, int>> wating_land, waiting_takeoff;
+    Queue<pair<int, int>> waiting_land, waiting_takeoff;
     vector<int> nums(2), times(2);
     int current_time = 0;
     auto work = [&](bool is_input)
@@ -30,7 +80,7 @@ int main()
             }
             if (runways[i].need == 0)
                 empties.push_back(i);
-            else 
+            else
                 flag = 1;
         }
         if (is_input)
@@ -40,22 +90,21 @@ int main()
             if (land_number < 0 && takeoff_number < 0)
                 status = 0;
             while (land_number-- > 0)
-                wating_land.push({++land_id, current_time});
+                waiting_land.push({++land_id, current_time});
             while (takeoff_number-- > 0)
                 waiting_takeoff.push({++takeoff_id, current_time});
         }
         for (auto x : empties)
         {
-            if (wating_land.empty() && waiting_takeoff.empty())
+            if (waiting_land.empty() && waiting_takeoff.empty())
                 break;
             flag = 1;
-            auto &Q = wating_land.empty() ? waiting_takeoff : wating_land;
-            int id = Q.front().first;
+            auto &Q = waiting_land.empty() ? waiting_takeoff : waiting_land;
+            auto front = Q.pop();
+            int id = front.first;
             int type = id <= takeoff_id;
             ++nums[type];
-            times[type] += current_time - Q.front().second;
-            Q.pop();
-            // cout << times[type] << endl;
+            times[type] += current_time - front.second;
             runways[x].need = id <= takeoff_id ? takeoff_time : land_time;
             printf("airplane %04d is ready to %s on runway %02d\n", id, type ? "takeoff" : "land", x);
         }
