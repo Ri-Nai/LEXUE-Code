@@ -17,7 +17,7 @@ int main()
             {
                 if (b & 1)
                     ans = ans * a;
-                if (ans > 1e9)
+                if (ans > 1e9 || a > 1e9)
                     return 1e9;
                 a = a * a;
                 b >>= 1;
