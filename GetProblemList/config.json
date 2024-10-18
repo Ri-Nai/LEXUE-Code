@@ -1,0 +1,11 @@
+{
+    "user_account": "",
+    "user_password": "",
+    "website_login_url": "https://lexue.bit.edu.cn/",
+    "courses" : [
+        "C_language",
+        "Data-Structure",
+        "Discrete-Mathematics",
+        "Programming-Practice"
+    ]
+}
