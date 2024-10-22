@@ -94,7 +94,9 @@ class LexueDriver:
                 print(f"当前题目丢失了呜呜呜")
         # json_list = sorted(json_list)
         new_json_list = sorted(json_list.items(), key=lambda x: int(x[0]))
+        new_json_list = [x for x in new_json_list if x[0] in problem_list]
         json_list = dict(new_json_list)
+
         # for key, value in json_list.items():
         #     print(key, value)
         print(json_list)
