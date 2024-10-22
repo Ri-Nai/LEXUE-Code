@@ -65,17 +65,17 @@ class LexueDriver:
             result = findall(r"\d+", name)
             if not result:
                 continue
-            id = int(result[0])
+            id = result[0]
             suffix = file_name_list[1]
-            if suffix in ("cpp", "c", "java", "py") and id > 10000:
+            if suffix in ("cpp", "c", "java", "py") and int(id) > 10000:
                 problem_list.append(id)
         # problem_list.sort()
-        problem_list = sorted(list(set(problem_list)))
+        problem_list = sorted(list(set(problem_list)), key=lambda x: int(x))
         print(problem_list)
 
         # with open(f"{course}.md", "w", encoding="utf-8") as f:
         for problem_id in problem_list:
-            if str(problem_id) in json_list:
+            if problem_id in json_list:
                 continue
             self.driver.get(f"{self.website_login_url}/mod/programming/view.php?id={problem_id}")
             print(problem_id, self.driver.current_url)
@@ -86,7 +86,7 @@ class LexueDriver:
                     EC.presence_of_element_located((By.XPATH, "/html/body/div[2]/div[3]/div/div/section/div[1]/h2"))
                 )
                 print(t.text)
-                json_list[problem_id] = t.text
+                json_list[str(problem_id)] = t.text
                 # f.write(f"{problem_id}\t\t{t.text}\n");
 
             except Exception as e:
