@@ -131,7 +131,7 @@ int CreateGList(GLNode **L, char *s)
         *L = NULL; /* 创建空表 */
     else
     {
-        *L = (GLNode *)malloc(sizeof(GLNode));;
+        *L = new GLNode;
         if (strlen(s) == 1)
         {
             (*L)->tag = ATOM;
@@ -149,7 +149,7 @@ int CreateGList(GLNode **L, char *s)
                 q = p;
                 if (strlen(sub) > 0)
                 {
-                    p = (GLNode *)malloc(sizeof(GLNode));;
+                    p = new GLNode;
                     p->tag = LIST;
                     q->tp = p;
                 }
@@ -164,11 +164,11 @@ int CreateGList(GLNode **L, char *s)
 int main()
 {
     char list[100];
-    GLNode *L = NULL, *G = NULL;
+    GLNode *L, *G;
+    int d;
     count = 0;
     scanf("%s", list);
     CreateGList(&L, list);
-    print(L);
     G = reverse(L);
     count = 0;
     print(G);
@@ -202,8 +202,7 @@ GLNode *reverse(GLNode *LS)
     if (LS->tag == ATOM)
     {
         GLNode *reversedTail = reverse(LS->tp);
-        // GLNode *newNode = (GLNode *)malloc(sizeof(GLNode));
-        GLNode *newNode = (GLNode *)malloc(sizeof(GLNode));;
+        GLNode *newNode = new GLNode;
         newNode->tag = ATOM;
         newNode->ptr.data = LS->ptr.data;
         newNode->tp = NULL;
@@ -214,12 +213,12 @@ GLNode *reverse(GLNode *LS)
     {
         GLNode *reversedTail = reverse(LS->tp);
         GLNode *reversedHead = reverse(LS->ptr.hp);
-        GLNode *newNode = (GLNode *)malloc(sizeof(GLNode));;
+        GLNode *newNode = new GLNode;
         newNode->tag = LIST;
         newNode->ptr.hp = reversedHead;
         newNode->tp = NULL;
         return append(reversedTail, newNode);
     }
     puts("Yeah");
-    return NULL;
+    return NULL; // 理论上不会到这里
 }
