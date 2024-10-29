@@ -7,9 +7,6 @@ for i in expr:
     if i.isalpha():
         mx = max(mx, i)
         mn = min(mn, i)
-    if i.isdigit():
-        while True:
-            pass
 chars = [chr(i) for i in range(ord(mn), ord(mx) + 1)]
 expr = expr.replace('!', '~')
 expr = expr.replace('-', '<=')
