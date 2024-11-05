@@ -1,5 +1,6 @@
 detect-BITOJ/
 BITLeXueRANK_2024C/
+*.cph/
 .vscode
 1*.c
 1*.cpp
