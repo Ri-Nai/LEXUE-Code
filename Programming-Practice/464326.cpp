@@ -8,42 +8,32 @@ int main()
         int x, y, id;
         Doctor() : x(0), y(0), id(0) {}
         Doctor(int id) : id(id), x(0), y(0) {}
+        Doctor(int x, int y, int id) : id(id), x(x), y(y) {}
         bool operator<(const Doctor &_) const
         {
-            if (x && y && _.x && _.y)
-            {
-                if (x < _.x && y < _.y)
-                    return true;
-                if (x > _.x && y > _.y)
-                    return false;
-                if (x < _.x)
-                    return (_.x - x) > (y - _.y);
-                return (_.y - y) > (x - _.x);
-            }
-            return 0;
+            return x + y < _.x + _.y;
         }
         bool operator==(const Doctor &_) const
         {
             return !(*this < _) && !(_ < *this);
         }
     };
-
     vector<Doctor> doctors;
-    auto getId = [&](int num)
-    {
-        if (index[num] == -1)
-        {
-            index[num] = doctors.size();
-            doctors.emplace_back(num);
-        }
-        return index[num];
-    };
     auto readDoctors = [&](int p)
     {
         int n;
         cin >> n;
         cin.get();
         int ranking = 1;
+        auto getId = [&](int num)
+        {
+            if (index[num] == -1)
+            {
+                index[num] = doctors.size();
+                doctors.emplace_back(num);
+            }
+            return index[num];
+        };
         for (int i = 1; i <= n; ++i)
         {
             string s;
@@ -53,14 +43,12 @@ int main()
             int cnt = 0;
             while (ss >> x)
             {
-                // cout << x << " ";
                 if (p)
                     doctors[getId(x)].y = ranking;
                 else
                     doctors[getId(x)].x = ranking;
                 ++cnt;
             }
-            // cout << endl;
             ranking += cnt;
         }
     };
@@ -76,6 +64,7 @@ int main()
     }
     vector<tuple<int, int, int>> edge;
     vector<int> dis(114);
+    vector<int> lastdis(114, 1919810);
     for (auto d1 : twice)
         for (auto d2 : twice)
         {
@@ -93,6 +82,8 @@ int main()
 
     auto BellmanFord = [&]()
     {
+        lastdis = dis;
+        fill(dis.begin(), dis.end(), 0);
         for (int i = 1; i < 114; ++i)
         {
             for (auto e : edge)
@@ -147,30 +138,8 @@ int main()
                 }
         }
     };
-
     auto linkValid = [&]()
     {
-        for (auto d1 : valid)
-            for (auto d2 : valid)
-            {
-                int u = d1.id, v = d2.id;
-                if (u == v)
-                    continue;
-                if (d1.x && d2.x)
-                {
-                    if (d1.x < d2.x)
-                        edge.emplace_back(v, u, -1);
-                    if (d1.x == d2.x)
-                        edge.emplace_back(u, v, 0);
-                }
-                if (d1.y && d2.y)
-                {
-                    if (d1.y < d2.y)
-                        edge.emplace_back(v, u, -1);
-                    if (d1.y == d2.y)
-                        edge.emplace_back(u, v, 0);
-                }
-            }
         for (auto d1 : valid)
         {
             int u = d1.id;
@@ -195,24 +164,26 @@ int main()
                 }
             }
         }
+
     };
     auto validTovalids = [&]()
     {
         for (auto d1 : valid)
+        {
+            int u = d1.id;
             for (auto d2 : valid)
             {
-                int u = d1.id, v = d2.id;
+                int v = d2.id;
                 if (u == v)
                     continue;
                 if (dis[u] != dis[v])
                     continue;
-                int val1 = d1.x + d1.y;
-                int val2 = d2.x + d2.y;
-                if (val1 == val2)
-                    edge.emplace_back(u, v, 0);
-                if (val1 < val2)
+                if (d1 < d2)
                     edge.emplace_back(v, u, -1);
+                if (d1 == d2)
+                    edge.emplace_back(u, v, 0);
             }
+        }
     };
 
     addMark(once);
@@ -221,8 +192,7 @@ int main()
             valid.push_back(d);
     linkValid();
     BellmanFord();
-    for (int i = 0; i < 100; ++i)
-        validTovalids(), BellmanFord();
+    validTovalids(), BellmanFord();
     valid.insert(valid.end(), twice.begin(), twice.end());
     sort(valid.begin(), valid.end(), [&](Doctor a, Doctor b)
          { return dis[a.id] < dis[b.id]; });
@@ -231,8 +201,12 @@ int main()
         int j = i;
         while ((j + 1) < valid.size() && dis[valid[j].id] == dis[valid[j + 1].id])
             ++j;
+        vector<int> res;
         for (int k = i; k <= j; ++k)
-            cout << valid[k].id << " \n"[j == k];
+            res.push_back(valid[k].id);
+        sort(res.begin(), res.end());
+        for (int j = 0; j < res.size(); ++j)
+            cout << res[j] << " \n"[j == res.size() - 1];
         i = j;
     }
 }
