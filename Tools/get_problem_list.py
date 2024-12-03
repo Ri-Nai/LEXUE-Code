@@ -87,11 +87,20 @@ class LexueDriver:
                 )
                 print(t.text)
                 json_list[str(problem_id)] = t.text
-                # f.write(f"{problem_id}\t\t{t.text}\n");
 
             except Exception as e:
-                json_list[problem_id] = "本题目丢失了呜呜呜"
-                print(f"当前题目丢失了呜呜呜")
+                self.driver.get(f"{self.website_login_url}/mod/programming/view.php?pid={problem_id}")
+                print(problem_id, self.driver.current_url)
+                try:
+                    t = WebDriverWait(self.driver, 1).until(
+                        EC.presence_of_element_located((By.XPATH, "/html/body/div[2]/div[3]/div/div/section/div[1]/h2"))
+                    )
+                    print(t.text)
+                    json_list[str(problem_id)] = t.text
+                except Exception as e:
+                    print(e)
+                    json_list[problem_id] = "本题目丢失了呜呜呜"
+                    print(f"当前题目丢失了呜呜呜")
         # json_list = sorted(json_list)
         new_json_list = sorted(json_list.items(), key=lambda x: int(x[0]))
         new_json_list = [x for x in new_json_list if x[0] in problem_list]
